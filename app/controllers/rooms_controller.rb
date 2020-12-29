@@ -1,10 +1,12 @@
 class RoomsController < ApplicationController
   before_action :set_room, only: [:show, :edit, :update, :destroy]
+  before_action :login_check
 
   # GET /rooms
   # GET /rooms.json
   def index
-    @rooms = Room.all
+      @rooms = Room.all
+    # TODO: おはようございます。
   end
 
   # GET /rooms/1
@@ -25,9 +27,10 @@ class RoomsController < ApplicationController
   # POST /rooms.json
   def create
     @room = Room.new(room_params)
-
     respond_to do |format|
       if @room.save
+        session[:room]=@room.name
+        #session[:room]=params["room[name]"]
         format.html { redirect_to @room, notice: 'Room was successfully created.' }
         format.json { render :show, status: :created, location: @room }
       else
@@ -71,4 +74,9 @@ class RoomsController < ApplicationController
     def room_params
       params.require(:room).permit(:name, :place, :number)
     end
+    def login_check
+      if session[:user] = nil then
+        redirect_to '/login.html'
+      end
+    end 
 end
